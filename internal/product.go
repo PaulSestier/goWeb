@@ -1,4 +1,4 @@
-package model
+package internal
 
 type Product struct {
 	Id          int     `json:"id"`
