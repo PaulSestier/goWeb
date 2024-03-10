@@ -13,7 +13,7 @@ func main() {
 	store := handlers.NewProductSlice()
 
 	//load products from json file
-	err := store.LoadProducts("products.json")
+	err := store.LoadProducts("./docs/db/products.json")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -24,6 +24,7 @@ func main() {
 	router.Get("/ping", store.Ping())
 	router.Get("/products", store.GetProducts())
 	router.Get("/products/{productId}", store.GetProductById())
+	router.Get("/products/search", store.PriceHigherThan())
 
 	if err := http.ListenAndServe(":8080", router); err != nil {
 		println("Error starting server: ", err.Error())

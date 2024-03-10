@@ -90,3 +90,28 @@ func (p *ProductsSlice) GetProductById() http.HandlerFunc {
 
 	}
 }
+
+// function that returns products with higher price than the one passed as parameter
+func (p *ProductsSlice) PriceHigherThan() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		productsGt := NewProductSlice()
+
+		price := r.URL.Query().Get("priceGt")
+		pricevalue, err := strconv.ParseFloat(price, 64)
+		if err != nil {
+			w.Header().Add("Content-Type", "text/plain")
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid price"))
+			return
+		}
+
+		for _, product := range p.Products {
+			if product.Price > pricevalue {
+				productsGt.Products = append(productsGt.Products, product)
+			}
+		}
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(productsGt.Products)
+	}
+}
